@@ -1,16 +1,6 @@
 {
   "users": [
     {
-      "name": "A",
-      "email": "A",
-      "id": 1
-    },
-    {
-      "name": "B",
-      "email": "B",
-      "id": 2
-    },
-    {
       "name": "C",
       "email": "C",
       "id": 3
