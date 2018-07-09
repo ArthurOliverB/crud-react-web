@@ -113,7 +113,7 @@ export default class UserCrud extends Component {
                 <div className="row">
                     <div className="col-12 col-md6">
                         <div className="form-group">
-                            <label>name</label>
+                            <label>Nome</label>
                             <input type="text" className="form-control"
                                 name="name"
                                 value={this.state.user.name}
