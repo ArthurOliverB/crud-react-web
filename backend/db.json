@@ -1,11 +1,19 @@
 {
-    "users": [{
-        "id": "1",
-        "nome": "Arthur",
-        "email": "arthur@cod3r.com"
-    }, {
-        "id": "2",
-        "nome": "Julia",
-        "email": "julia@cod3r.com"
-    }]
+  "users": [
+    {
+      "name": "A",
+      "email": "A",
+      "id": 1
+    },
+    {
+      "name": "B",
+      "email": "B",
+      "id": 2
+    },
+    {
+      "name": "C",
+      "email": "C",
+      "id": 3
+    }
+  ]
 }

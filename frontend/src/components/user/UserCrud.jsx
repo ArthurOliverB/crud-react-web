@@ -18,8 +18,14 @@ const initialState = {
 export default class UserCrud extends Component {
     state = { ...initialState }
     
-    ckear() {
-        this.setState({user: initialState.user})
+
+    componentWillMount() {
+        axios(baseUrl).then(resp => {
+            this.setState({list: resp.data})
+        })
+    }
+    clear() {
+        this.setState({user: initialState.user})    
     }
 
     save() {
@@ -29,13 +35,26 @@ export default class UserCrud extends Component {
         const url = user.id ? `${baseUrl}/${user.id}` : baseUrl
         axios[method](url, user).then(resp => {
              const list = this.GetUpdatedList(resp.data)
-             this.setState({user: initialState, list})
+             this.setState({user: initialState.user, list})
+        })
+    }
+
+    load(user) {
+        this.setState({user})
+    }
+
+    remove(user) {
+        axios.delete(`${baseUrl}/${user.id}`).then(resp => {
+            const list = this.GetUpdatedList(null)
+            
+            this.setState({list})
         })
     }
 
     GetUpdatedList(user) {
+        
         const list = this.state.list.filter(u => u.id !== user.id)
-        list.unshift(user)
+        if(user) list.unshift(user)
         return list
     }
 
@@ -46,26 +65,84 @@ export default class UserCrud extends Component {
         this.setState({ user })
     }
     
+    RenderTable() {
+        return(
+            <table className="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>name</th>
+                        <th>E-mail</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {this.RenderRows()}
+                </tbody>
+            </table>
+        )
+    }
+
+    RenderRows() {
+        return this.state.list.map(user => {
+            return (
+                <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>
+                        <button className="btn btn-warning" 
+                            onClick={() => this.load(user)}>
+                            <i className="fa fa-pencil"/>
+                        </button>
+
+                        <button className="btn btn-danger ml-2"
+                            onClick={() => this.remove(user)}>
+                            <i className="fa fa-trash"/> 
+                        </button>
+                    </td>
+                </tr>
+            )
+        })
+    }
+
     RenderForm() {
         return(
             <div className="form">
                 <div className="row">
                     <div className="col-12 col-md6">
-                        <label>Nome</label>
-                        <input type="text" className="form-control"
-                            name="name"
-                            value={this.state.user.name}
-                            onChange={e => this.UpdateField(e)}
-                            placeholder="Digite o nome"/>
+                        <div className="form-group">
+                            <label>name</label>
+                            <input type="text" className="form-control"
+                                name="name"
+                                value={this.state.user.name}
+                                onChange={e => this.UpdateField(e)}
+                                placeholder="Digite o name"/>
+                        </div>
                     </div>
-                    
+                     
                     <div className="col-12 col-md6">
-                        <label>Email</label>
-                        <input type="text" className="form-group"
-                            name="email"
-                            value={this.state.user.email}
-                            onChange={e => this.UpdateField(e)}
-                            placeholder="Digite o email"/>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input type="text" className="form-control"
+                                name="email"
+                                value={this.state.user.email}
+                                onChange={e => this.UpdateField(e)}
+                                placeholder="Digite o email"/>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="row">
+                    <div className="col-12 d-flex justify-content-end">
+                        <button className="btn btn-primary" onClick={e => this.save(e)}>
+                            Salvar
+                        </button>
+
+                        <button className="btn btn-secondary ml-2" onClick={e => this.clear(e)}>
+                            Cancelar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -75,7 +152,8 @@ export default class UserCrud extends Component {
     render() {
         return(
             <Main {...headerProps}>
-                Cadastro de Usuário
+                {this.RenderForm()}
+                {this.RenderTable()}
             </Main>
         )
     }
